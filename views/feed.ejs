@@ -1,0 +1,251 @@
+<!-- views/feed.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instagram Feed</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #fafafa;
+    }
+
+    .post {
+      width: 50%;
+      margin: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      background-color: #fff;
+      border-radius: 8px;
+    }
+
+    .post img {
+      width: 100%;
+      height: auto;
+    }
+
+    .post-content {
+      padding: 10px;
+    }
+
+    .caption {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .user {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .like-button {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .like-icon {
+      margin-right: 5px;
+    }
+
+    .overlay {
+  position: fixed;
+  top: 25%;
+  
+  left: 25%;
+  width: 50%;
+  height: 50%; /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  background-color:#ccc;
+  max-height: 80%; /* Adjust the max-height to your preference */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.overlay-content ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.overlay-content ul li {
+  margin-bottom: 10px;
+}
+
+.overlay button {
+  margin-top: 10px;
+}
+
+
+
+
+#followersList .user-item,
+#followingList .user-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px;
+}
+
+#followersList .user-item:hover,
+#followingList .user-item:hover {
+  background-color: #ddd;
+}
+
+#followersList .user-item img,
+#followingList .user-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+#followersList .user-item span,
+#followingList .user-item span {
+  font-size: 14px;
+}
+
+.textClass {
+  color: #333;
+}
+#pfp {
+  text-align: center; /* Center align the content */
+}
+
+.button-container {
+  margin-bottom: 10px; /* Add space between buttons and image */
+}
+
+.small-button {
+  padding: 5px 10px; /* Adjust button padding */
+  font-size: 14px; /* Adjust button font size */
+}
+  </style>
+</head>
+<body>
+    <%- include('partials/navbar') %>
+    <% if (posts.length == 0) { %>
+      <p a>Follow people to see their posts</p>
+    <% } %>
+    <% posts.reverse() %>
+   
+  <% posts.forEach(post => { %>
+    
+    <div class="post">
+      <img src="<%= post.image %>" alt="/uploads/default.jpg" id="imagePost" >
+      
+      <div class="post-content">
+        <a href="/profile/<%= post.user %>" style="text-decoration: none; color: inherit;">
+        <% 
+        const postUser = users.find(user => user.username === post.user);
+        if (postUser) { 
+          %>
+            <img src="<%= postUser.pfp %>" style=" margin-bottom: 25px; margin-right: 5px; width:6rem;height: 6rem; border-radius: 50%;float:right;">
+        <% }else {console.log(users)}  %>
+      
+        <p class="caption"><strong><%= post.user %></strong>: <%= post.caption %></p>
+        <p class="user">User: <%= post.user %></p>
+        </a>
+        
+        <div class="like-comment-section">
+          <div class="like-button">
+            <button class="like-icon" type="button" onclick="sendLike('<%= post.image %>', '<%= post.user %>')">❤️</button>
+
+            <% if (post.likes && Array.isArray(post.likes)) { %>
+              <span id="likeCount <%= post.image %>"><%= post.likes.length %> Likes</span>
+            <% } else { %>
+              <span>0 Likes</span> <!-- or any default value you prefer -->
+            <% } %>
+          </div>
+
+          <button type="button" onclick="toggleComments('<%= post.image %>')" style="margin-top: 10px;"> Comments </button>
+        </div>
+
+        <div class="comment-section" style="margin-top: 10px;">
+          <input type="text" id="comment" placeholder="Add a comment..." style="margin-right: 10px;">
+          <button type="button" onclick="sendComment('<%= post.image %>', '<%= post.user %>')">Send</button> 
+        </div>
+
+        <!-- Hidden div for followers list -->
+        <div id="followersList<%= post.image %>" class="overlay" style="display:none;">
+          <div class="overlay-content">
+            <h2 style="color: white;">Comments</h2>
+            <ul>
+              <% post.comments.forEach(comment => { %>
+                <a class="user-item" style="text-decoration: none; color: inherit;" ><li class="user-item"><%= comment %></li></a>
+              <% }); %>
+            </ul>
+            <button type="button" onclick="toggleComments('<%=post.image%>')">Close</button>
+          </div>
+        </div>
+
+
+      </div>
+    
+    </div>
+    <% }); %>
+
+  <script>
+    const sendComment = (imageName, postUser) =>{
+      let comment = document.getElementById("comment").value
+      var formData = {
+        image: imageName,
+        user: postUser,
+        content: comment,
+      }
+      var jsonData = JSON.stringify(formData)
+      fetch('/comment', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonData
+      }).then(() => {
+        window.location.href="/feed"
+      })
+    }
+
+    const sendLike = (imageName, postUser) =>{
+
+        var formData = {
+            image: imageName,
+            user: postUser,
+            content: "liked your post"
+        }
+        var jsonData = JSON.stringify(formData)
+        fetch('/feed', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: jsonData
+        }).then((response)=>response.json())
+        .then((response)=>{
+            let Likes = document.getElementById('likeCount ' + imageName)
+            Likes.innerHTML = response.likes + " Likes"    
+        })
+        .catch((e) => {
+            console.log("Error in feed")
+        })  
+        
+    }
+    const toggleComments = (postImage) => {
+     
+      const followersList = document.getElementById('followersList'+postImage);
+      followersList.style.display = (followersList.style.display === 'none') ? 'block' : 'none';
+    }
+  </script>
+ 
+</body>
+</html>

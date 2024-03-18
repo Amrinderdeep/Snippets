@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create a New Post</title>
+  <style>
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    form {
+      max-width: 400px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      color: #333;
+    }
+
+    .inputfield {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .buttonfield {
+      background-color: #3498db;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #2185d0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .post{
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+      border-radius: 8px;
+      text-align: center; /* Center profile content */
+    }
+    
+  </style>
+</head>
+<body>
+  <%- include('partials/navbar') %>
+<div >
+  <form>
+    <h1>Create a New Post</h1>
+
+    <label for="caption">Caption:</label>
+    <input type="text" id="caption" name="caption" class="inputfield" required>
+
+    <label for="image">Image:</label>
+    <input type="file" id="image" name="image" class="inputfield" accept="image/*" required>
+
+    <button type="button" onclick="uploadPost()" class="buttonfield">Create Post</button>
+  </form>
+</div>
+  <script>
+    const uploadPost = () => {
+      const formData = new FormData();
+      formData.append('caption', document.getElementById('caption').value);
+
+      const fileInput = document.getElementById('image');
+      const file = fileInput.files[0];
+      formData.append('image', file);
+
+      fetch('/newPost', {
+        method: "POST",
+        body: formData
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Error uploading post');
+        }
+      })
+      .then(() => {
+        window.location.href = "/feed";
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        window.location.href = "/login";
+      });
+    }
+  </script>
+ 
+</body>
+</html>

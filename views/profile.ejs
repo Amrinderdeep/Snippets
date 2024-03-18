@@ -1,0 +1,368 @@
+<!-- views/profile.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= user.username %>'s Profile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fafafa;
+    }
+
+    .profile {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+      border-radius: 8px;
+      text-align: center; /* Center profile content */
+    }
+
+    .profile-picture {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+
+    .bio {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .follow-button {
+      padding: 8px 16px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .posts-container {
+        display: grid; /* Use CSS grid for post layout */
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjusted column width */
+        grid-gap: 20px; /* Spacing between posts */
+        margin-top: 20px;
+    }
+
+    .post {
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .post img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .caption {
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    /* Add this CSS to your stylesheet */
+
+    /* Add or modify the following CSS in your stylesheet */
+
+.overlay {
+  position: fixed;
+  top: 25%;
+  
+  left: 25%;
+  width: 50%;
+  height: 50%; /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  background-color:#ccc;
+  max-height: 80%; /* Adjust the max-height to your preference */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.overlay-content ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.overlay-content ul li {
+  margin-bottom: 10px;
+}
+
+.overlay button {
+  margin-top: 10px;
+}
+
+
+
+
+#followersList .user-item,
+#followingList .user-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px;
+}
+
+#followersList .user-item:hover,
+#followingList .user-item:hover {
+  background-color: #ddd;
+}
+
+#followersList .user-item img,
+#followingList .user-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+#followersList .user-item span,
+#followingList .user-item span {
+  font-size: 14px;
+}
+
+.textClass {
+  color: #333;
+}
+#pfp {
+  text-align: center; /* Center align the content */
+}
+
+.button-container {
+  margin-bottom: 10px; /* Add space between buttons and image */
+}
+
+.small-button {
+  padding: 5px 10px; /* Adjust button padding */
+  font-size: 14px; /* Adjust button font size */
+}
+
+  </style>
+</head>
+<body>
+    <%- include('partials/navbar') %>
+  <div class="profile">
+    <div id="pfp">
+      <div class="button-container">
+        <% if (user.username == current) { %>
+          <input type="file" id="imagepfp" name="image" accept="image/*" required>
+          <button type="button" onclick="pfp()" class="small-button">Change photo</button>
+        <% } %>
+      </div>
+      <img src="<%= user.pfp %>" alt="Profile picture" class="profile-picture">
+    </div>
+    <h2><%= user.username %></h2>
+    <!--<p class="bio">BIO</p>-->
+    <div style="display: flex;justify-content: space-between; ">
+        <button type="button" onclick="toggleFollowers()" class="button">Followers: <%= user.followers.length %></button>
+        <button type="button" onclick="toggleFollowing()" class="button">Following: <%= user.following.length %></button>
+      </div>
+    <!-- Hidden div for followers list -->
+    <div id="followersList" class="overlay" style="display:none;">
+      <div class="overlay-content">
+        <h2 style="color: white;">Followers</h2>
+        <ul>
+          <% user.followers.forEach(follower => { %>
+            <a class="user-item" style="text-decoration: none; color: inherit;" href="/profile/<%=follower%>"><li class="user-item"><%= follower %></li></a>
+          <% }); %>
+        </ul>
+        <button onclick="toggleFollowers()">Close</button>
+      </div>
+    </div>
+    
+    <div id="followingList" class="overlay" style="display:none;">
+      <div class="overlay-content">
+        <h2 style="color: white;">Following</h2>
+        <ul>
+          <% user.following.forEach(following => { %>
+            <a class="user-item" style="text-decoration: none; color: inherit;" href="/profile/<%=following%>"><li><%= following %></li></a>
+          <% }); %>
+        </ul>
+        <button onclick="toggleFollowing()">Close</button>
+      </div>
+    </div>
+    <% if (user.username != current) { %>
+        <% if (!user.followers.includes(current)) { %>
+        <button class="follow-button" onclick="follow('<%= user.username %>')" type="button">Follow</button>
+        <% }  else { %>
+        <button class="follow-button" onclick="follow('<%= user.username %>')" type="button">Following</button>
+        <% } %>
+    <% }  else { %>
+    
+    <a href="/newPost" class="follow-button" >Create Post</a>
+    <% } %>
+  </div>
+  <% if(posts.length == 0){ %>
+    <p style="text-align: center;">No posts to show</p>
+  <% } %>
+  <div class="posts-container">
+    
+    <% posts.forEach(post => { %>
+      <div class="post">
+        <img src="<%= post.image %>" alt="Post Image">
+        <p class="caption"><strong><%= user.username %></strong>: <%= post.caption %></p>
+        <div class="like-button">
+          <button class="like-icon" type="button" onclick="sendLike('<%= post.image %>', '<%= post.user %>')">❤️</button>
+          <% if (post.likes && Array.isArray(post.likes)) { %>
+            <span id="likeCount <%= post.image %>"><%= post.likes.length %> Likes</span>
+          <% } else { %>
+            <span>0 Likes</span> <!-- or any default value you prefer -->
+          <% } %>
+        </div>
+    <button type="button" onclick="toggleComments()" style="margin-top: 10px;"> Comments </button>
+
+    <div class="comment-section" style="margin-top: 10px;">
+      <input type="text" id="comment" placeholder="Add a comment..." style="margin-right: 10px;">
+      <button type="button" onclick="sendComment('<%= post.image %>', '<%= post.user %>')">Send</button> 
+    </div>
+        
+      </div>
+
+      
+      
+      <div id="CommentList" class="overlay" style="display:none;">
+        <div class="overlay-content">
+          <h2 style="color: white;">Comments</h2>
+          <ul>
+            <% post.comments.forEach(comment => { %>
+              <a class="user-item" style="text-decoration: none; color: inherit;" ><li class="user-item"><%= comment %></li></a>
+            <% }); %>
+          </ul>
+          <button type="button" onclick="toggleComments()">Close</button>
+        </div>
+      </div>
+    </div>
+
+  
+  </div>
+  <% }); %>
+
+  <script>
+
+    const sendComment = (imageName, postUser) =>{
+      let comment = document.getElementById("comment").value
+      var formData = {
+        image: imageName,
+        user: postUser,
+        content: comment,
+      }
+      var jsonData = JSON.stringify(formData)
+      fetch('/comment', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonData
+      }).then(() =>{
+        window.location.href = `/profile/${postUser}`
+      })
+    }
+    const toggleComments = () => {
+     
+      const followersList = document.getElementById('CommentList');
+      followersList.style.display = (followersList.style.display === 'none') ? 'block' : 'none';
+    }
+
+    const pfp = (user) =>{
+        const formData = new FormData();
+        const fileInput = document.getElementById('imagepfp');
+        const file = fileInput.files[0];
+        formData.append('image', file);
+        formData.append('user', user);
+
+        fetch('/pfp', {
+            method: "POST",
+            body: formData
+        }).then(response => {
+            if (response.ok) {
+            return response.json();
+            } else {
+            throw new Error('Error uploading post');
+            }
+        })
+        .then(() => {
+            window.location.href = "/profile";
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            window.location.href = "/profile";
+        });
+    }
+
+    const follow = (user) =>{
+        var formData = {
+            username: user,
+            content: "started following you"
+        }
+        var JsonData = JSON.stringify(formData)
+
+        fetch('/follow', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JsonData
+        }).then(()=>{
+          window.location.href = `/profile/${user}`
+        })
+    }
+    const sendLike = (imageName, postUser) =>{
+
+      var formData = {
+          image: imageName,
+          user: postUser,
+          content: "liked your post"
+      }
+      var jsonData = JSON.stringify(formData)
+      fetch('/feed', {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: jsonData
+      }).then((response)=>response.json())
+      .then((response)=>{
+          let Likes = document.getElementById('likeCount ' + imageName)
+          Likes.innerHTML = response.likes + " Likes"    
+      })
+      .catch((e) => {
+          console.log("Error in feed")
+      })  
+    }
+    const toggleFollowers = () => {
+        const followersList = document.getElementById('followersList');
+        followersList.style.display = (followersList.style.display === 'none') ? 'block' : 'none';
+      }
+
+      // Function to toggle visibility of following list
+      const toggleFollowing = () => {
+        const followingList = document.getElementById('followingList');
+        followingList.style.display = (followingList.style.display === 'none') ? 'block' : 'none';
+      }
+  </script>
+</body>
+</html>

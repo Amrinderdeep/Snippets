@@ -1,0 +1,207 @@
+<!-- views/navbar.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snippet</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      margin-top: 60px;
+    }
+    .search-profile-picture {
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    nav {
+      position: fixed; /* Fixed position at the top */
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000; /* Ensure it's above other content */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px; /* Added margin from top and sides */
+      background-color: #333;
+      color: #fff;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease;
+
+    }
+
+    .nav-left, .nav-center, .nav-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-left {
+      font-size: 20px;
+      margin-right: 20px;
+    }
+
+    .nav-center {
+      flex-grow: 1;
+      text-align: center;
+    }
+
+    .nav-center a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .nav-right button {
+      background-color: #fff;
+      color: #333;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    /* Styles for the search dropdown */
+    .search-dropdown {
+      position: absolute;
+      background: #f1f1f1;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      padding: 5px;
+      width: 200px;
+      z-index: 999;
+      display: none;
+    }
+
+    .user-item {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .user-item:hover {
+      background-color: #ddd;
+    }
+
+    .user-item img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .user-item span {
+      font-size: 14px;
+    }
+    .textClass {
+      color: #333;
+    }
+    
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-left">
+      <img src="/pngs/logo.png" style="width: 50px; margin-right: 10px;">
+      Snippets
+    </div>
+    
+    <div class="nav-center">
+      <a href="/newPost">Create</a>
+      <a href="/feed">Feed</a>
+      <a href="/profile">Profile</a>
+    </div>
+    
+    <div class="nav-right">
+      <div class="search-container" style="margin-right: 20px;">
+        <a href="/notify" style="text-decoration: none; color: white;">
+          Notifications: <span style="font-size: 1.2em;">🔔</span>
+        </a>
+        <input type="text" id="userSearch" placeholder="Search..." style="margin-left: 10px;" autocomplete="off">
+        <div class="search-dropdown" id="searchDropdown"></div>
+      </div>
+      <button onclick="logout()" style="margin-right: 20px;">Logout</button>
+    </div>
+    
+  </nav>
+
+  <script>
+    function logout() {
+      fetch('/logout', {
+        method: 'POST'
+      }).then(() => {  
+          window.location.href = "/" 
+      })
+    }
+    //Code for dropdown
+    const userSearchInput = document.getElementById('userSearch');
+    const searchDropdown = document.getElementById('searchDropdown');
+
+    userSearchInput.addEventListener('input', handleSearch);
+
+    function handleSearch() {
+      const searchTerm = userSearchInput.value.trim();
+      let formData = {
+        search: searchTerm
+      }
+      var jsonData = JSON.stringify(formData)
+
+      if (searchTerm.length > 0) {
+        fetch('/search', {
+          method: "POST",
+          headers: {
+            "Content-Type" : "application/json"
+          },
+          body: jsonData 
+        })
+        .then(response => response.json())
+        .then(users => showSearchResults(users));
+      } else {
+        hideSearchResults();
+      }
+    }
+
+    function showSearchResults(users) {
+      searchDropdown.innerHTML = '';
+      if (users.length > 0) {
+        users.forEach(user => {
+          const userItem = document.createElement('div');
+          userItem.classList.add('user-item');
+          userItem.onclick = ()=>{
+            let userName = user.username
+            window.location.href = `/profile/${userName}`
+          }
+
+          const userPfp = document.createElement('img');
+          userPfp.classList.add('search-profile-picture')
+          userPfp.src = user.pfp;
+          
+
+          const username = document.createElement('span');
+          username.classList.add('textClass')
+          username.textContent = user.username;
+
+          userItem.appendChild(userPfp);
+          userItem.appendChild(username);
+        
+          searchDropdown.appendChild(userItem);
+        });
+
+        searchDropdown.style.display = 'block';
+      } else {
+        hideSearchResults();
+      }
+    }
+    function hideSearchResults() {
+      searchDropdown.innerHTML = '';
+      searchDropdown.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

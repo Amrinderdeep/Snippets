@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snippets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fafafa; /* Light gray background */
+            color: #333; /* Dark gray text */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header, nav {
+            background-color: #333; /* Dark gray background */
+            color: #fff; /* White text */
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav {
+            margin-bottom: auto; /* Pushes footer to the bottom */
+        }
+
+        section {
+            padding: 20px;
+            text-align: justify;
+            line-height: 1.6;
+            flex-grow: 1; /* Allows section to grow and push footer to the bottom */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center-align content horizontally */
+        }
+
+        h1, h2 {
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            border: 2px solid #3498db;
+            color: #3498db;
+            background-color: #fff;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            margin-right: 10px;
+        }
+
+        .button:last-child {
+            margin-right: 0;
+        }
+
+        .button:hover {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        footer {
+            background-color: #333; /* Dark gray background */
+            color: #fff; /* White text */
+            padding: 10px;
+            text-align: center;
+          
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div style="display: flex; align-items: center; justify-content: center; text-align: center;margin-right: 50px;">
+            <img src="/pngs/logo.png" style="width: 75px; margin-right: 10px;">
+            <h1>Snippets</h1><br>
+            
+        </div>
+        
+    </header>
+
+    <nav>
+        <!-- Nav content goes here -->
+    </nav>
+
+    <section>
+        <h2>Welcome to our Social Media Community!</h2>
+        <p>
+            Snippets is more than just a social media platform – it's your digital canvas for expressing yourself, sharing your passions, and connecting with like-minded individuals around the globe. Here, every post is a story waiting to be told, every interaction a chance to spark inspiration.
+        </p>
+        <p>
+            Join our vibrant community and immerse yourself in a world where creativity knows no bounds. Whether you're an artist, a storyteller, a foodie, or a traveler, Snippet provides the perfect stage for you to showcase your talents, discover new interests, and forge meaningful connections.
+        </p>
+        <p>
+            Get ready to unleash your imagination, discover fresh perspectives, and make your mark on the digital landscape. Together, let's turn every moment into a masterpiece. Welcome to Snippet – where every byte counts, and every connection matters.
+        </p>
+        <div class="button-container">
+            <a class="button" href="/login">Login</a>
+            <a class="button" href="/register">Register</a>
+        </div>
+        <!-- Add more content or features as needed -->
+    </section>
+
+    <footer>
+        &copy; 2024 Snippets. Developed by Amrinderdeep Singh Bhatt.
+    </footer>
+
+</body>
+</html>

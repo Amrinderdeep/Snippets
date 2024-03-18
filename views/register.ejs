@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #333;
+            color: #fff;
+        }
+
+        .register-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .register-box {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            width: 300px;
+            text-align: center;
+        }
+
+        .register-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .register-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #fff;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #333;
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 4px;
+            background-color: #3498db; /* Changed to blue */
+            color: #fff; /* Changed to white */
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .register-button:hover {
+            background-color: #2980b9; /* Darker shade of blue on hover */
+
+        }
+    </style>
+</head>
+<body>  
+    <div style="display: flex; align-items: center; position: absolute; left: 42%; top: 7%;">
+        <img src="/pngs/logo.png" style="width: 75px; margin-right: 10px;">
+        <h1 style="margin: 0;">Snippets</h1>
+    </div>
+
+
+    <div class="register-container">
+        <div class="register-box">
+            <h2>Register</h2>
+            <form>
+                <input type="text" class="register-input" id="username" placeholder="Username" required>
+                <input type="password" class="register-input" id="password" placeholder="Password" required>
+                <input type="password" class="register-input" id="confirm" placeholder="Confirm Password" required>
+                <button type="button" class="register-button" onclick="submitForm()">Register</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        const submitForm = ()=>{
+            var formData = {
+                username: document.getElementById("username").value,
+                password: document.getElementById("password").value,
+                confirm: document.getElementById("confirm").value
+            }
+            var jsonData = JSON.stringify(formData)
+            fetch("/register", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            }).then(response =>{
+                if (!response.ok) {
+                    // Handle error response
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    
+                }
+                window.location.href = "/login"
+            }).catch(error => {
+                
+                alert('Invalid registration');
+            })
+        }
+    </script>
+  
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!-- views/notifications.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications</title>
+  <style>
+    
+
+    .notification-content {
+    flex: 1; /* Expand to fill available space */
+    }
+
+    .notification-date {
+    flex-shrink: 0; /* Prevent shrinking */
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .notification {
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex; /* Use flexbox to align items */
+      justify-content: space-between; /* Distribute items evenly */
+      align-items: center; /* Center items vertically */
+    }
+    .notification p {
+      margin: 0;
+      color: #333;
+    }
+    .notification .sender {
+      font-weight: bold;
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+  <%- include('partials/navbar') %>
+
+  <div class="container">
+    <h1>Notifications</h1>
+    <% if (notifications.length == 0){%>
+        <div class="notification">
+            <div class="notification-content">
+              <p style="text-align: center;">You dont have any notifications currently</p>
+            </div>
+        </div>
+    <% } %>
+    <% notifications.reverse() %>
+    <% notifications.forEach(notification => { %>
+        <div class="notification">
+            <div class="notification-content">
+              <p><%= notification.sender %> <%= notification.content %></p>
+            </div>
+            <div class="notification-date">
+              <p><%= notification.date %></p>
+            </div>
+          </div>
+    <% }); %>
+  </div>
+
+</body>
+</html>
