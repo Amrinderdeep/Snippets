@@ -183,8 +183,12 @@ app.route('/feed')
 
 app.route('/comment')
 .post(async (req,res) =>{
+    if(req.body.content == ""){
+        return res.status(401).json({message: "Comment is null"})
+    }
     let notificationContent = "commented on your post"
     let currentDate = new Date();
+
     let notifications = await Notifications.create({content: notificationContent, sender: req.session.user.username, receiver: req.body.user, date: currentDate})
     let post = await Posts.findOne({ image: req.body.image })
     let commentText = req.session.user.username + ": " + req.body.content
@@ -278,7 +282,5 @@ app.route('/logout')
         res.status(200).json({message: "Logout"})
     });
 })
-
-
 
 app.listen(3000)
