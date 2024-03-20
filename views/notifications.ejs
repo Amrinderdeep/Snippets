@@ -70,7 +70,8 @@
               <p><%= notification.sender %> <%= notification.content %></p>
             </div>
             <div class="notification-date">
-              <p><%= notification.date %></p>
+              <% arr = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] %>
+              <p><%= notification.date.getDate() %>-<%= arr[notification.date.getMonth()] %></p>
             </div>
           </div>
     <% }); %>
