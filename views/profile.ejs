@@ -20,14 +20,45 @@
       background-color: #fff;
       border-radius: 8px;
       text-align: center; /* Center profile content */
+      position: relative;
     }
 
-    .profile-picture {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      margin-bottom: 10px;
+    .profile-picture-container {
+      position: relative;
+      cursor: pointer;
     }
+
+    .edit-symbol {
+      position: absolute;
+      top: 85%; /* Position the edit symbol vertically centered */
+      left: 62%; /* Position the edit symbol horizontally centered */
+      transform: translate(-50%, -50%); /* Center the edit symbol within its container */
+      font-size: 20px;
+      
+      padding: 5px;
+      border-radius: 50%;
+      display: none;
+    }
+
+
+    
+    .profile-picture {
+      width: 150px; /* Set container width */
+      height: 150px; /* Set container height */
+      border-radius: 50%; /* Apply border-radius for circular shape */
+      margin-bottom: 10px;
+      margin-left:37%;
+      overflow: hidden; /* Hide any overflow */
+      background-size: cover; /* Crop the background image to cover the container */
+      background-position: center; /* Center the background image horizontally */
+      display: flex; /* Add flexbox for centering */
+      justify-content: center; /* Horizontally center content */
+    }
+    .profile-picture-container:hover .edit-symbol {
+      display: block;
+    }
+   
+
 
     .bio {
       font-size: 16px;
@@ -67,7 +98,7 @@
       border-radius: 8px;
     }
 
-    .post img {
+    .post img{
       max-width: 100%;
       height: auto;
       border-radius: 8px;
@@ -81,85 +112,85 @@
 
     /* Add or modify the following CSS in your stylesheet */
 
-.overlay {
-  position: fixed;
-  top: 25%;
-  
-  left: 25%;
-  width: 50%;
-  height: 50%; /* Semi-transparent background */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+    .overlay {
+      position: fixed;
+      top: 25%;
+      
+      left: 25%;
+      width: 50%;
+      height: 50%; /* Semi-transparent background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-.overlay-content {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  background-color:#ccc;
-  max-height: 80%; /* Adjust the max-height to your preference */
-  overflow-y: auto; /* Enable vertical scrolling */
-}
+    .overlay-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      background-color:#ccc;
+      max-height: 80%; /* Adjust the max-height to your preference */
+      overflow-y: auto; /* Enable vertical scrolling */
+    }
 
-.overlay-content ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
+    .overlay-content ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
 
-.overlay-content ul li {
-  margin-bottom: 10px;
-}
+    .overlay-content ul li {
+      margin-bottom: 10px;
+    }
 
-.overlay button {
-  margin-top: 10px;
-}
-
-
+    .overlay button {
+      margin-top: 10px;
+    }
 
 
-#followersList .user-item,
-#followingList .user-item {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 5px;
-}
 
-#followersList .user-item:hover,
-#followingList .user-item:hover {
-  background-color: #ddd;
-}
 
-#followersList .user-item img,
-#followingList .user-item img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
+    #followersList .user-item,
+    #followingList .user-item {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 5px;
+    }
 
-#followersList .user-item span,
-#followingList .user-item span {
-  font-size: 14px;
-}
+    #followersList .user-item:hover,
+    #followingList .user-item:hover {
+      background-color: #ddd;
+    }
 
-.textClass {
-  color: #333;
-}
-#pfp {
-  text-align: center; /* Center align the content */
-}
+    #followersList .user-item img,
+    #followingList .user-item img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
 
-.button-container {
-  margin-bottom: 10px; /* Add space between buttons and image */
-}
+    #followersList .user-item span,
+    #followingList .user-item span {
+      font-size: 14px;
+    }
 
-.small-button {
-  padding: 5px 10px; /* Adjust button padding */
-  font-size: 14px; /* Adjust button font size */
-}
+    .textClass {
+      color: #333;
+    }
+    #pfp {
+      text-align: center; /* Center align the content */
+    }
+
+    .button-container {
+      margin-bottom: 10px; /* Add space between buttons and image */
+    }
+
+    .small-button {
+      padding: 5px 10px; /* Adjust button padding */
+      font-size: 14px; /* Adjust button font size */
+    }
 
   </style>
 </head>
@@ -169,11 +200,15 @@
     <div id="pfp">
       <div class="button-container">
         <% if (user.username == current) { %>
-          <input type="file" id="imagepfp" name="image" accept="image/*" required>
-          <button type="button" onclick="pfp()" class="small-button">Change photo</button>
+          
+          <input type="file" id="imagepfp" name="image" accept="image/*" onchange="pfp()" hidden required>
         <% } %>
       </div>
-      <img src="<%= user.pfp %>" alt="Profile picture" class="profile-picture">
+      <div class="profile-picture-container" >
+      <div class="profile-picture" style="background-image: url('<%= user.pfp %>');" onclick="triggerFileInput()"></div>
+      <span class="edit-symbol">✏️</span>
+      </div>
+      <!--<img src="<%= user.pfp %>" alt="Profile picture" class="profile-picture">-->
     </div>
     <h2><%= user.username %></h2>
     <!--<p class="bio">BIO</p>-->
@@ -254,7 +289,13 @@
     
 
   <script>
-  
+    function triggerFileInput() {
+      // Find the input field and trigger a click event
+      var inputField = document.getElementById('imagepfp');
+      if (inputField) {
+        inputField.click();
+      }
+    }
     const sendComment = (imageName, postUser) =>{
       let comment = document.getElementById("comment").value
       var formData = {
