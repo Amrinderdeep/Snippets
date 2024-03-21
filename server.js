@@ -144,11 +144,16 @@ app.route('/newPost')
 })
 .post(upload.single('image') , async (req,res) => {
     console.log("Route Reached")
+
     const imagePath = '/uploads/' + req.file.filename;
     const post = await Posts.create({caption: req.body.caption, image:imagePath ,user: req.session.user.username })
     console.log("Post Created")
     res.json({message: "Post Created"})
 })
+
+
+  
+  
 
 app.route('/feed')
 .get(async (req, res)=>{
@@ -283,4 +288,8 @@ app.route('/logout')
     });
 })
 
+
+app.get('*', (req, res) => {
+    res.redirect('/');
+});
 app.listen(3000)
