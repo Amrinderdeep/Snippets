@@ -93,6 +93,19 @@
   </form>
 </div>
   <script>
+    document.getElementById("caption").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+          event.preventDefault();
+          uploadPost();
+      }
+    });
+    document.getElementById("image").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+          event.preventDefault();
+          uploadPost();
+      }
+    });
+
     const uploadPost = () => {
       const formData = new FormData();
       formData.append('caption', document.getElementById('caption').value);

@@ -179,7 +179,9 @@ app.route('/feed')
         await post.save()
     }
     else{
-        let notifications = await Notifications.create({content: contentText, sender: req.session.user.username, receiver: req.body.user, date: currentDate})
+        if(req.session.user.username != req.body.user){
+            let notifications = await Notifications.create({content: contentText, sender: req.session.user.username, receiver: req.body.user, date: currentDate})
+        }
         post.likes.push(user)
         await post.save()
     }
@@ -193,8 +195,9 @@ app.route('/comment')
     }
     let notificationContent = "commented on your post"
     let currentDate = new Date();
-
-    let notifications = await Notifications.create({content: notificationContent, sender: req.session.user.username, receiver: req.body.user, date: currentDate})
+    if(req.session.user.username != req.body.user){
+        let notifications = await Notifications.create({content: notificationContent, sender: req.session.user.username, receiver: req.body.user, date: currentDate})
+    }
     let post = await Posts.findOne({ image: req.body.image })
     let commentText = req.session.user.username + ": " + req.body.content
     post.comments.push(commentText)

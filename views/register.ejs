@@ -72,7 +72,7 @@
     <div class="register-container">
         <div class="register-box">
             <h2>Register</h2>
-            <form>
+            <form id="registerForm">
                 <input type="text" class="register-input" id="username" placeholder="Username" required>
                 <input type="password" class="register-input" id="password" placeholder="Password" required>
                 <input type="password" class="register-input" id="confirm" placeholder="Confirm Password" required>
@@ -81,6 +81,31 @@
         </div>
     </div>
     <script>
+        document.getElementById("registerForm").addEventListener("submit", function(event) {
+            
+            event.preventDefault(); 
+            submitForm();
+        });
+        document.getElementById("username").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                submitForm();
+            }
+        });
+
+        document.getElementById("password").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                submitForm();
+            }
+        });
+        document.getElementById("confirm").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                submitForm();
+            }
+        });
+    
         const submitForm = ()=>{
             var formData = {
                 username: document.getElementById("username").value,

@@ -233,36 +233,28 @@
             <span>0 Likes</span> <!-- or any default value you prefer -->
           <% } %>
         </div>
-    <button type="button" onclick="toggleComments()" style="margin-top: 10px;"> Comments </button>
-
-    <div class="comment-section" style="margin-top: 10px;">
-      <input type="text" id="comment" placeholder="Add a comment..." style="margin-right: 10px;">
-      <button type="button" onclick="sendComment('<%= post.image %>', '<%= post.user %>')">Send</button> 
-    </div>
-        
-      </div>
-
-      
-      
-      <div id="CommentList" class="overlay" style="display:none;">
-        <div class="overlay-content">
-          <h2 style="color: white;">Comments</h2>
-          <ul>
-            <% post.comments.forEach(comment => { %>
-              <a class="user-item" style="text-decoration: none; color: inherit;" ><li class="user-item"><%= comment %></li></a>
-            <% }); %>
-          </ul>
-          <button type="button" onclick="toggleComments()">Close</button>
+        <button type="button" onclick="toggleComments()" style="margin-top: 10px;"> Comments </button>
+        <div class="comment-section" style="margin-top: 10px;">
+          <input type="text" id="comment" placeholder="Add a comment..." style="margin-right: 10px;">
+          <button type="button" onclick="sendComment('<%= post.image %>', '<%= post.user %>')">Send</button> 
+        </div>
+        <div id="CommentList" class="overlay" style="display:none;">
+          <div class="overlay-content">
+            <h2 style="color: white;">Comments</h2>
+            <ul>
+              <% post.comments.forEach(comment => { %>
+                <a class="user-item" style="text-decoration: none; color: inherit;" ><li class="user-item"><%= comment %></li></a>
+              <% }); %>
+            </ul>
+            <button type="button" onclick="toggleComments()">Close</button>
+          </div>
         </div>
       </div>
-    </div>
-
-  
-  </div>
-  <% }); %>
+    <% }); %>
+    
 
   <script>
-
+  
     const sendComment = (imageName, postUser) =>{
       let comment = document.getElementById("comment").value
       var formData = {
