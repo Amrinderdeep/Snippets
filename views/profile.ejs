@@ -26,6 +26,7 @@
     .profile-picture-container {
       position: relative;
       cursor: pointer;
+      
     }
 
     .edit-symbol {
@@ -53,6 +54,7 @@
       background-position: center; /* Center the background image horizontally */
       display: flex; /* Add flexbox for centering */
       justify-content: center; /* Horizontally center content */
+      
     }
     .profile-picture-container:hover .edit-symbol {
       display: block;
@@ -204,9 +206,11 @@
           <input type="file" id="imagepfp" name="image" accept="image/*" onchange="pfp()" hidden required>
         <% } %>
       </div>
-      <div class="profile-picture-container" >
-      <div class="profile-picture" style="background-image: url('<%= user.pfp %>');" onclick="triggerFileInput()"></div>
-      <span class="edit-symbol">✏️</span>
+      <div class="profile-picture-container" onclick="triggerFileInput()" >
+      <div class="profile-picture" style="background-image: url('<%= user.pfp %>');" ></div>
+      <% if (user.username == current) { %>
+        <span class="edit-symbol">✏️</span>
+      <% } %>
       </div>
       <!--<img src="<%= user.pfp %>" alt="Profile picture" class="profile-picture">-->
     </div>
@@ -268,12 +272,12 @@
             <span>0 Likes</span> <!-- or any default value you prefer -->
           <% } %>
         </div>
-        <button type="button" onclick="toggleComments()" style="margin-top: 10px;"> Comments </button>
+        <button type="button" onclick="toggleComments('<%= post.image %>')" style="margin-top: 10px;"> Comments </button>
         <div class="comment-section" style="margin-top: 10px;">
-          <input type="text" id="comment" placeholder="Add a comment..." style="margin-right: 10px;">
+          <input type="text" id="comment<%= post.image %>" placeholder="Add a comment..." style="margin-right: 10px;">
           <button type="button" onclick="sendComment('<%= post.image %>', '<%= post.user %>')">Send</button> 
         </div>
-        <div id="CommentList" class="overlay" style="display:none;">
+        <div id="CommentList<%= post.image %>" class="overlay" style="display:none;">
           <div class="overlay-content">
             <h2 style="color: white;">Comments</h2>
             <ul>
@@ -281,7 +285,7 @@
                 <a class="user-item" style="text-decoration: none; color: inherit;" ><li class="user-item"><%= comment %></li></a>
               <% }); %>
             </ul>
-            <button type="button" onclick="toggleComments()">Close</button>
+            <button type="button" onclick="toggleComments('<%= post.image %>')">Close</button>
           </div>
         </div>
       </div>
@@ -297,7 +301,7 @@
       }
     }
     const sendComment = (imageName, postUser) =>{
-      let comment = document.getElementById("comment").value
+      let comment = document.getElementById("comment"+imageName).value
       var formData = {
         image: imageName,
         user: postUser,
@@ -314,9 +318,8 @@
         window.location.href = `/profile/${postUser}`
       })
     }
-    const toggleComments = () => {
-     
-      const followersList = document.getElementById('CommentList');
+    const toggleComments = (imageName) => {
+      const followersList = document.getElementById('CommentList'+imageName);
       followersList.style.display = (followersList.style.display === 'none') ? 'block' : 'none';
     }
 

@@ -72,7 +72,6 @@ app.route('/login')
         });
     }
     else{
-        console.log("User Doesnt exist")
         res.status(401).json({message: "User doesnt exist"})
     }
 })
@@ -85,13 +84,10 @@ app.route("/register")
 .post(async (req,res) =>{
     let data = req.body
     if(data.password != data.confirm){
-        console.log(data.password)
-        console.log(data.confirm)
         return res.status(401).json({message: "Password and confirmation doesnt match"})
     }
     const check = await Users.findOne({username: req.body.username})
     if(check){
-        console.log("user exists")
         return res.status(401).json({message: "User already exists"})
     }
     else{
@@ -143,11 +139,8 @@ app.route('/newPost')
     
 })
 .post(upload.single('image') , async (req,res) => {
-    console.log("Route Reached")
-
     const imagePath = '/uploads/' + req.file.filename;
     const post = await Posts.create({caption: req.body.caption, image:imagePath ,user: req.session.user.username })
-    console.log("Post Created")
     res.json({message: "Post Created"})
 })
 
@@ -191,8 +184,10 @@ app.route('/feed')
 app.route('/comment')
 .post(async (req,res) =>{
     if(req.body.content == ""){
+        
         return res.status(401).json({message: "Comment is null"})
     }
+  
     let notificationContent = "commented on your post"
     let currentDate = new Date();
     if(req.session.user.username != req.body.user){
@@ -247,13 +242,11 @@ app.route('/profile/:id')
 
 app.route('/follow')
 .post(async (req, res) =>{
-    console.log("Follow request Reached")
     let follower = req.session.user.username
     
     let account = await Users.findOne({username: req.body.username})
     let followerAccount = await Users.findOne({username: follower})
     if(follower !== account.username){
-        console.log(`${follower} wants to follow ${account.username}`)
         if(account.followers.includes(follower)){
             let idx = account.followers.indexOf(follower)
             account.followers.splice(idx,1)
@@ -285,7 +278,6 @@ app.route('/search')
 
 app.route('/logout')
 .post(async (req,res) => {
-    console.log("logout")
     req.session.destroy(()=>{
         res.status(200).json({message: "Logout"})
     });

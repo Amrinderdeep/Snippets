@@ -84,7 +84,7 @@
         document.getElementById("registerForm").addEventListener("submit", function(event) {
             
             event.preventDefault(); 
-            submitForm();
+            submitForm()
         });
         document.getElementById("username").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
@@ -122,13 +122,12 @@
             }).then(response =>{
                 if (!response.ok) {
                     // Handle error response
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                    
+                    throw new Error(`HTTP error! Status: ${response.status} Message: ${response.json.message}`);
                 }
                 window.location.href = "/login"
-            }).catch(error => {
-                
-                alert('Invalid registration');
+            })
+            .catch(error => {
+                alert("Invalid Registeration");
             })
         }
     </script>
